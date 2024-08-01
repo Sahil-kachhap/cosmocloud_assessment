@@ -18,7 +18,7 @@ class Employee {
         id: json['_id'],
         name: json['name'],
         address: Address.fromJson(json['address']),
-        contactMethods: json['contact_methods'].map((method) => ContactMethod.fromJson(method)));
+        contactMethods: List<ContactMethod>.from(json['contact_methods'].map((method) => ContactMethod.fromJson(method))));
   }
 
   Map<String, dynamic> toJson() {
