@@ -1,5 +1,6 @@
 import 'package:employee_management_system/data/DTO/employee.dart';
 import 'package:employee_management_system/data/data_sources/remote_data_source.dart';
+import 'package:employee_management_system/domain/entity/employee_entity.dart';
 
 class EmployeeRepository {
   final RemoteDataSource remoteDataSource = RemoteDataSource();
@@ -13,12 +14,22 @@ class EmployeeRepository {
     }
   }
 
-  Future<List<Employee>> fetchEmployeeList(int offset) async {
+  Future<List<EmployeeEntity>> fetchEmployeeList(int offset) async {
     try {
       List<Employee> employees = await remoteDataSource.fetchEmployees(offset);
-      return employees;
+      List<EmployeeEntity> entities = employees.map((employee) => EmployeeEntity(name: employee.name, id: employee.id!)).toList(); 
+      return entities;
     } catch (error) {
       throw error.toString();
+    }
+  }
+
+  Future<Employee> fetchEmployeeProfile(String employeeId) async{
+    try {
+      Employee employee = await remoteDataSource.fetchEmployeeProfile(employeeId);
+      return employee;
+    } catch(error){
+      throw Exception(error.toString());
     }
   }
 }

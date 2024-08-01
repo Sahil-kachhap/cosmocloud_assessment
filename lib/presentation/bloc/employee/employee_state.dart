@@ -13,7 +13,7 @@ final class EmployeeCreated extends EmployeeState {
 }
 
 final class EmployeeListLoaded extends EmployeeState {
-  final List<Employee> employees;
+  final List<EmployeeEntity> employees;
 
   EmployeeListLoaded({required this.employees});
 }

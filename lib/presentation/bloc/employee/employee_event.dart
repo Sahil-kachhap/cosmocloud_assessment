@@ -15,8 +15,8 @@ final class CreateEmployeeEvent extends EmployeeEvent {
   CreateEmployeeEvent({required this.name, required this.line1, required this.city, required this.country, required this.zipcode, required this.contactMethods});
 }
 
-final class FetchEmployeeProfile extends EmployeeEvent {
+final class FetchEmployeeProfileEvent extends EmployeeEvent {
   final String employeeId;
 
-  FetchEmployeeProfile({required this.employeeId});
+  FetchEmployeeProfileEvent({required this.employeeId});
 }

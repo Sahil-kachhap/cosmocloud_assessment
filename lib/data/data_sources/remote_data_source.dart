@@ -45,4 +45,19 @@ class RemoteDataSource {
       throw error.toString();
     }
   }
+
+  Future<Employee> fetchEmployeeProfile(String employeeId) async{
+    try {
+      String url = Constants.baseUrl + Constants.fetchEmployeeDetailsEndpoint(employeeId);
+      final headers = Constants.apiHeaders();
+      final response = await http.get(Uri.parse(url), headers: headers);
+      if(response.statusCode == 200){
+        return Employee.fromJson(jsonDecode(response.body));
+      }else{
+        throw Exception(response.body.toString());
+      }
+    } catch(error) {
+      throw Exception(error.toString());
+    }
+  }
 }
