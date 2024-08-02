@@ -10,7 +10,7 @@ final class CreateEmployeeEvent extends EmployeeEvent {
   final String city;
   final String country;
   final String zipcode;
-  final Map<String, String> contactMethods;
+  final List<ContactMethod> contactMethods;
 
   CreateEmployeeEvent({required this.name, required this.line1, required this.city, required this.country, required this.zipcode, required this.contactMethods});
 }
