@@ -4,7 +4,6 @@ import 'package:employee_management_system/data/DTO/employee.dart';
 import 'package:employee_management_system/domain/entity/employee_entity.dart';
 import 'package:employee_management_system/domain/usecase/create_employee.dart';
 import 'package:employee_management_system/domain/usecase/fetch_employees.dart';
-import 'package:employee_management_system/utils/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'employee_event.dart';
@@ -14,16 +13,15 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   final FetchEmployeeList fetchEmployeeList = FetchEmployeeList();
   final CreateEmployee createEmployee = CreateEmployee();
   int page = 0;
-  List<EmployeeEntity> employees = [];
+  List<EmployeeEntity> employeesList = [];
 
   EmployeeBloc() : super(EmployeeInitial()) {
     on<FetchEmployeeListEvent>((event, emit) async {
       emit(Loading());
       try {
-        int offset = page * Constants.limit;
-        List<EmployeeEntity> employees =
-            await fetchEmployeeList.fetchEmployees(offset);
-        emit(EmployeeListLoaded(employees: employees));
+        List<EmployeeEntity> employees = await fetchEmployeeList.fetchEmployees(employeesList.length);
+        employeesList.addAll(employees);
+        emit(EmployeeListLoaded(employees: employeesList));
       } catch (error) {
         emit(ErrorState(errorMessage: error.toString()));
       }
@@ -31,9 +29,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     on<FetchEmployeeProfileEvent>((event, emit) async {
       emit(Loading());
       try {
-        Employee employee =
-            await fetchEmployeeList.fetchProfile(event.employeeId);
+        Employee employee =  await fetchEmployeeList.fetchProfile(event.employeeId);
         emit(EmployeeProfileLoaded(employee: employee));
+        add(FetchEmployeeListEvent());
       } catch (error) {
         emit(ErrorState(errorMessage: error.toString()));
       }
