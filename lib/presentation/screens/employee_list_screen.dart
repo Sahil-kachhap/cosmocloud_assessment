@@ -1,6 +1,9 @@
 import 'package:employee_management_system/presentation/bloc/employee/employee_bloc.dart';
 import 'package:employee_management_system/presentation/screens/employee_form_screen.dart';
-import 'package:employee_management_system/presentation/screens/employee_profile_screen.dart';
+import 'package:employee_management_system/presentation/widgets/show_employee_list.dart';
+import 'package:employee_management_system/utils/constants.dart';
+import 'package:employee_management_system/utils/device_utils.dart';
+import 'package:employee_management_system/utils/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,13 +30,13 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff2A203F),
+      backgroundColor: const Color(Constants.backgroundDarkThemeColor),
       appBar: AppBar(
         title: const Text(
-          "Employee List",
+          TText.employeeListScreenTitle,
           style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2, color: Colors.white),
         ),
-        backgroundColor: const Color(0xff2A203F),
+        backgroundColor: const Color(Constants.backgroundDarkThemeColor),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -42,7 +45,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
             MaterialPageRoute(builder: (context) => const EmployeeFormScreen()),
           );
         },
-        backgroundColor: const Color(0xff9853B8),
+        backgroundColor: const Color(Constants.backgroundLightThemeColor),
         child: const Icon(Icons.add, color: Colors.white, size: 30,),
       ),
       body:BlocConsumer<EmployeeBloc, EmployeeState>(
@@ -51,48 +54,21 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
        },
        builder: (context, state) {
         if (state is Loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return DeviceUtils.showCircularProgressIndicator();
         }
 
         if (state is EmployeeListLoaded) {
-          return ListView.builder(
-              controller: scrollController,
-              shrinkWrap: false,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: state.employees.length + 1,
-              itemBuilder: (context, index) {
-                if(index >= state.employees.length){
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return ListTile(
-                  title: Text(state.employees[index].name, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),),
-                  subtitle: Text("Employee ID: ${state.employees[index].id}", style: const TextStyle(color: Colors.white),),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EmployeeProfile(
-                          employeeId: state.employees[index].id,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              });
+          return state.employees.isNotEmpty? ShowEmployeeList(scrollController: scrollController, employees: state.employees,): Center(child: Text("No Employee Exists Yet", style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontWeight: FontWeight.bold),),);
         }
 
-        return Container();
+        return const SizedBox();
       }, listener: (context, state) {
         if (state is ErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage),
-            ),
-          );
+          DeviceUtils.showSnackBar(context, state.errorMessage, Colors.red);
         }
       }),
     );
   }
 }
+
+
