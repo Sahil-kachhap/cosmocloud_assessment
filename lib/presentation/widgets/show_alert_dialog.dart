@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ShowDialogToConfirmEmployeeDeletion extends StatelessWidget {
-  const ShowDialogToConfirmEmployeeDeletion({
+  const  ShowDialogToConfirmEmployeeDeletion({
     super.key,
     required this.name,
   });
