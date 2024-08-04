@@ -4,6 +4,7 @@ import 'package:employee_management_system/presentation/widgets/show_employee_li
 import 'package:employee_management_system/utils/constants.dart';
 import 'package:employee_management_system/utils/device_utils.dart';
 import 'package:employee_management_system/utils/texts.dart';
+import 'package:employee_management_system/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,9 +33,9 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
     return Scaffold(
       backgroundColor: const Color(Constants.backgroundDarkThemeColor),
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           TText.employeeListScreenTitle,
-          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2, color: Colors.white),
+          style: TThemes.appBarTextStyling,
         ),
         backgroundColor: const Color(Constants.backgroundDarkThemeColor),
       ),
@@ -57,12 +58,16 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
           return DeviceUtils.showCircularProgressIndicator();
         } else if (state is EmployeeListLoaded) {
           return state.employees.isNotEmpty? ShowEmployeeList(scrollController: scrollController, employees: state.employees,): Center(child: Text("No Employee Exists Yet", style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontWeight: FontWeight.bold),),);
-        }
+        } 
 
         return const SizedBox();
       }, listener: (context, state) {
         if(state is LoadMore){
           DeviceUtils.showSnackBar(context, "Retrieving Next Page...", Colors.green);
+        }
+
+        if(state is EmployeeDeleted){
+          DeviceUtils.showSnackBar(context, state.message, Colors.red);
         }
 
         if(state is NoMoreEmployeeFound){
