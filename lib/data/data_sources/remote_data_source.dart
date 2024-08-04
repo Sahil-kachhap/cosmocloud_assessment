@@ -27,13 +27,12 @@ class RemoteDataSource {
 
   Future<List<Employee>> fetchEmployees(int offset) async{
     try {
-      final String url = Constants.baseUrl + Constants.createOrListEmployeesEndpoint(true, limit: 11, offset: offset);
+      final String url = Constants.baseUrl + Constants.createOrListEmployeesEndpoint(true, limit: Constants.limit, offset: offset);
       final headers = Constants.apiHeaders();
       final response = await http.get(Uri.parse(url), headers: headers);
 
       if(response.statusCode == 200){
         final decodedResponseBody = jsonDecode(response.body)['data'];
-        // final employeeList = decodedResponseBody['data'];
         log("Employees Data Received", name: "Fetch Employee List");
         return List<Employee>.from(decodedResponseBody.map((employee) => Employee.fromJson(employee)));
       } else {
