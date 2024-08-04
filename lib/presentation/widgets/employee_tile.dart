@@ -17,6 +17,7 @@ class EmployeeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(id),
+      background: Container(),
       secondaryBackground: const EmployeeTileDismissContainer(),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
