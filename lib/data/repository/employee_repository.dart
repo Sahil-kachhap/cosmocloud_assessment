@@ -32,4 +32,13 @@ class EmployeeRepository {
       throw Exception(error.toString());
     }
   }
+
+  Future<String> deleteEmployeeProfile(String employeeId) async{
+    try {
+      String response = await remoteDataSource.deleteEmployee(employeeId);
+      return response;
+    } catch(error){
+      throw Exception(error.toString());
+    }
+  }
 }

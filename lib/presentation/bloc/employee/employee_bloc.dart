@@ -3,6 +3,7 @@ import 'package:employee_management_system/data/DTO/contact_method.dart';
 import 'package:employee_management_system/data/DTO/employee.dart';
 import 'package:employee_management_system/domain/entity/employee_entity.dart';
 import 'package:employee_management_system/domain/usecase/create_employee.dart';
+import 'package:employee_management_system/domain/usecase/delete_employee.dart';
 import 'package:employee_management_system/domain/usecase/fetch_employees.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +13,7 @@ part 'employee_state.dart';
 class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   final FetchEmployeeList _fetchEmployeeList = FetchEmployeeList();
   final CreateEmployee _createEmployee = CreateEmployee();
+  final DeleteEmployeeUsecase _deleteEmployee = DeleteEmployeeUsecase();
   final List<EmployeeEntity> _employeesList = [];
   bool _isInitialPage = true;
 
@@ -38,7 +40,6 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
       try {
         Employee employee =  await _fetchEmployeeList.fetchProfile(event.employeeId);
         emit(EmployeeProfileLoaded(employee: employee));
-        add(FetchEmployeeListEvent());
       } catch (error) {
         emit(ErrorState(errorMessage: error.toString()));
       }
@@ -59,6 +60,20 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
         String response = await _createEmployee.addEmployee(employee);
         emit(EmployeeCreated(message: response));
       } catch (error) {
+        emit(ErrorState(errorMessage: error.toString()));
+      }
+    });
+    on<ScreenTransitionEvent>((event, emit) {
+      emit(EmployeeListLoaded(employees: _employeesList));
+    });
+    on<DeleteEmployee>((event, emit) async{
+      try {
+        String response = await _deleteEmployee.deleteEmployeeProfile(event.employeeId);
+        emit(EmployeeDeleted(message: response));
+        _employeesList.clear();
+        _isInitialPage = true;
+        add(FetchEmployeeListEvent());
+      } catch(error){
         emit(ErrorState(errorMessage: error.toString()));
       }
     });

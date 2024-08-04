@@ -34,3 +34,10 @@ final class ErrorState extends EmployeeState {
 
 
 final class NoMoreEmployeeFound extends EmployeeState {}
+
+final class EmployeeDeleted extends EmployeeState {
+  final String message;
+
+  EmployeeDeleted({required this.message});
+}
+ 

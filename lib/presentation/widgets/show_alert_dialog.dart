@@ -1,12 +1,16 @@
+import 'package:employee_management_system/presentation/bloc/employee/employee_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShowDialogToConfirmEmployeeDeletion extends StatelessWidget {
   const  ShowDialogToConfirmEmployeeDeletion({
     super.key,
     required this.name,
+    required this.id
   });
 
   final String name;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class ShowDialogToConfirmEmployeeDeletion extends StatelessWidget {
             style: TextStyle(color: Colors.red),
           ),
           onPressed: () {
-            // TODO: Add event to delete employee with given ID
+            context.read<EmployeeBloc>().add(DeleteEmployee(employeeId: id));
             Navigator.of(context).pop();
           },
         ),

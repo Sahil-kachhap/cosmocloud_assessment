@@ -24,7 +24,7 @@ class EmployeeTile extends StatelessWidget {
           final bool res = await showDialog(
               context: context,
               builder: (BuildContext context) {
-                return ShowDialogToConfirmEmployeeDeletion(name: name);
+                return ShowDialogToConfirmEmployeeDeletion(name: name, id: id,);
               });
           return res;
         }

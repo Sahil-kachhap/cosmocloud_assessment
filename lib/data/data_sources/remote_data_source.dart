@@ -60,4 +60,20 @@ class RemoteDataSource {
       throw Exception(error.toString());
     }
   }
+
+    Future<String> deleteEmployee(String employeeId) async{
+    try {
+      String url = Constants.baseUrl + Constants.deleteEmployeeEndpoint(employeeId);
+      final headers = Constants.apiHeaders();
+      final response = await http.delete(Uri.parse(url), headers: headers, body: jsonEncode({}));
+      if(response.statusCode == 200){
+        return "Employee removed successfully";
+      }else{
+        log(response.body.toString());
+        throw Exception("An unknown exception occurred.");
+      }
+    } catch(error) {
+      throw Exception(error.toString());
+    }
+  }
 }

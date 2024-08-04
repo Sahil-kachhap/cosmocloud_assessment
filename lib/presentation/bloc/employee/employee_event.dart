@@ -20,3 +20,11 @@ final class FetchEmployeeProfileEvent extends EmployeeEvent {
 
   FetchEmployeeProfileEvent({required this.employeeId});
 }
+
+final class ScreenTransitionEvent extends EmployeeEvent{}
+
+final class DeleteEmployee extends EmployeeEvent {
+  final String employeeId;
+
+  DeleteEmployee({required this.employeeId});
+}
