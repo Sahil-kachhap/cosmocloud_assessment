@@ -50,19 +50,24 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
       ),
       body:BlocConsumer<EmployeeBloc, EmployeeState>(
        buildWhen: (previous, current) {
-         return (current is EmployeeListLoaded); 
+         return (current is EmployeeListLoaded || current is Loading); 
        },
        builder: (context, state) {
         if (state is Loading) {
           return DeviceUtils.showCircularProgressIndicator();
-        }
-
-        if (state is EmployeeListLoaded) {
+        } else if (state is EmployeeListLoaded) {
           return state.employees.isNotEmpty? ShowEmployeeList(scrollController: scrollController, employees: state.employees,): Center(child: Text("No Employee Exists Yet", style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontWeight: FontWeight.bold),),);
         }
 
         return const SizedBox();
       }, listener: (context, state) {
+        if(state is LoadMore){
+          DeviceUtils.showSnackBar(context, "Retrieving Next Page...", Colors.green);
+        }
+
+        if(state is NoMoreEmployeeFound){
+          DeviceUtils.showSnackBar(context, "That's all of us . No more data exists 🎉", Colors.amber);
+        }
         if (state is ErrorState) {
           DeviceUtils.showSnackBar(context, state.errorMessage, Colors.red);
         }

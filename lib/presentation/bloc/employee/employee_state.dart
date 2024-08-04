@@ -6,6 +6,8 @@ final class EmployeeInitial extends EmployeeState {}
 
 final class Loading extends EmployeeState {}
 
+final class LoadMore extends EmployeeState {}
+
 final class EmployeeCreated extends EmployeeState {
   final String message;
 
@@ -29,3 +31,6 @@ final class ErrorState extends EmployeeState {
 
   ErrorState({required this.errorMessage});
 }
+
+
+final class NoMoreEmployeeFound extends EmployeeState {}
