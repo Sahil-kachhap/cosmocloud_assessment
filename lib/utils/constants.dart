@@ -13,6 +13,8 @@ class Constants {
   // endpoint to fetch a specific employee details
   static String fetchEmployeeDetailsEndpoint(String employeeId) =>
       "/employees/$employeeId";
+  
+  static String deleteEmployeeEndpoint(String employeeId) => "/employees/$employeeId";
 
   // Api Headers
   static Map<String, String> apiHeaders() => {
