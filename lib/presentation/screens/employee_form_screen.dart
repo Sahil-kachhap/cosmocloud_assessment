@@ -2,6 +2,7 @@ import "package:employee_management_system/data/DTO/contact_method.dart";
 import "package:employee_management_system/presentation/bloc/employee/employee_bloc.dart";
 import "package:employee_management_system/presentation/widgets/form_text_field.dart";
 import "package:employee_management_system/utils/constants.dart";
+import "package:employee_management_system/utils/device_utils.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
@@ -13,8 +14,7 @@ class EmployeeFormScreen extends StatefulWidget {
 }
 
 class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
-  final GlobalKey<FormState> _formKey =
-      GlobalKey<FormState>(); // A key for managing the form
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // A key for managing the form
   var selectedValue = "";
   List<String> contactChannels = ["Email", "Phone"];
   Map<String, String> contactMethods = {};
@@ -32,17 +32,19 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(Constants.backgroundDarkThemeColor),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Add Employee"),
+        title: const Text("Add Employee", style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color(Constants.backgroundDarkThemeColor),
       ),
       body: BlocListener<EmployeeBloc, EmployeeState>(
         listener: (context, state) {
            if(state is EmployeeCreated){
-             Constants.showSnackBar(context, state.message, Colors.green);
+             DeviceUtils.showSnackBar(context, state.message, Colors.green);
              Navigator.pop(context);
            } else if(state is ErrorState){
-             Constants.showSnackBar(context, state.errorMessage, Colors.red);
+             DeviceUtils.showSnackBar(context, state.errorMessage, Colors.red);
            }
         },
         child: Padding(
@@ -79,7 +81,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
                   children: [
                     const Text(
                       "Contact Methods",
-                      style: TextStyle(fontSize: 20.0),
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
                     ),
                     IconButton(
                       onPressed: () {
@@ -103,39 +105,42 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        child: DropdownButtonFormField<String>(
-                          items: contactChannels.map((channel) => DropdownMenuItem(value: channel.toUpperCase(), child: Text(channel))).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value!;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Email/Phone",
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(width: 1, color: Colors.purple)),
-                            errorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(width: 1, color: Colors.red),
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Select a contact method';
-                            } else {
-                              return null;
-                            }
-                          },
+                      child: DropdownButtonFormField<String>(
+                        items: contactChannels.map((channel) => DropdownMenuItem(value: channel.toUpperCase(), child: Text(channel))).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value!;
+                          });
+                        },
+                        style: const TextStyle(color: Colors.white),
+                        dropdownColor: const Color(Constants.backgroundLightThemeColor),
+                        decoration: InputDecoration(
+                          hintText: "Channel",
+                          hintStyle: const TextStyle(color: Colors.white),
+                          labelStyle: const TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Colors.white)),
+                          focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.white), borderRadius: BorderRadius.circular(10)),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(width: 1, color: Colors.red),
+                              borderRadius: BorderRadius.circular(10)),
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Select a contact method';
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(
-                      width: 20.0,
+                      width: 10.0,
                     ),
                     Expanded(
-                      child: FormTextField(controller: contactMethodController,labelText: "Value",contactMethods: methods),
+                      flex: 2,
+                      child: FormTextField(controller: contactMethodController,labelText: "Value"),
                     ),
                   ],
                 ),
@@ -156,6 +161,11 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
+                        
+                        // if user enters a single email/phone and submits the form instead of adding more contact methods.
+                        if(methods.isEmpty){
+                          methods.add(ContactMethod(method: selectedValue == "EMAIL" ? Method.email: Method.phone, value: contactMethodController.text));
+                        }
                         
                         context.read<EmployeeBloc>().add(
                               CreateEmployeeEvent(
