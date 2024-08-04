@@ -3,12 +3,12 @@ import 'package:employee_management_system/data/repository/employee_repository.d
 import 'package:employee_management_system/domain/entity/employee_entity.dart';
 
 class FetchEmployeeList{
-  final EmployeeRepository employeeRepository = EmployeeRepository();
+  final EmployeeRepository _employeeRepository = EmployeeRepository();
 
 
   Future<List<EmployeeEntity>> fetchEmployees(int offset) async{
     try {
-      List<EmployeeEntity> employees = await employeeRepository.fetchEmployeeList(offset);
+      List<EmployeeEntity> employees = await _employeeRepository.fetchEmployeeList(offset);
       return employees;
     } catch(error){
       throw error.toString();
@@ -17,7 +17,7 @@ class FetchEmployeeList{
 
   Future<Employee> fetchProfile(String employeeId) async{
     try {
-      Employee employee = await employeeRepository.fetchEmployeeProfile(employeeId);
+      Employee employee = await _employeeRepository.fetchEmployeeProfile(employeeId);
       return employee;
     } catch(error){
       throw error.toString();
