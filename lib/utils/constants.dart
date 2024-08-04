@@ -30,7 +30,7 @@ class Constants {
       "Error occurred while adding the employee";
 
   // Api Query Parameters
-  static const limit = 10;
+  static const limit = 11;
 
   
   // themes
