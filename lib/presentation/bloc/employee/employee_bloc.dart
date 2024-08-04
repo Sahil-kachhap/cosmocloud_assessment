@@ -10,18 +10,25 @@ part 'employee_event.dart';
 part 'employee_state.dart';
 
 class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
-  final FetchEmployeeList fetchEmployeeList = FetchEmployeeList();
-  final CreateEmployee createEmployee = CreateEmployee();
-  int page = 0;
-  List<EmployeeEntity> employeesList = [];
+  final FetchEmployeeList _fetchEmployeeList = FetchEmployeeList();
+  final CreateEmployee _createEmployee = CreateEmployee();
+  final List<EmployeeEntity> _employeesList = [];
+  bool _isInitialPage = true;
 
   EmployeeBloc() : super(EmployeeInitial()) {
     on<FetchEmployeeListEvent>((event, emit) async {
-      emit(Loading());
+      _isInitialPage ? emit(Loading()): emit(LoadMore());
       try {
-        List<EmployeeEntity> employees = await fetchEmployeeList.fetchEmployees(employeesList.length);
-        employeesList.addAll(employees);
-        emit(EmployeeListLoaded(employees: employeesList));
+        List<EmployeeEntity> employees = await _fetchEmployeeList.fetchEmployees(_employeesList.length);
+        if(employees.isEmpty){
+          emit(NoMoreEmployeeFound());
+        }
+
+        if(_isInitialPage){
+          _isInitialPage = false;
+        }
+        _employeesList.addAll(employees);
+        emit(EmployeeListLoaded(employees: _employeesList));
       } catch (error) {
         emit(ErrorState(errorMessage: error.toString()));
       }
@@ -29,7 +36,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     on<FetchEmployeeProfileEvent>((event, emit) async {
       emit(Loading());
       try {
-        Employee employee =  await fetchEmployeeList.fetchProfile(event.employeeId);
+        Employee employee =  await _fetchEmployeeList.fetchProfile(event.employeeId);
         emit(EmployeeProfileLoaded(employee: employee));
         add(FetchEmployeeListEvent());
       } catch (error) {
@@ -49,7 +56,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
           ),
           contactMethods: event.contactMethods,
         );
-        String response = await createEmployee.addEmployee(employee);
+        String response = await _createEmployee.addEmployee(employee);
         emit(EmployeeCreated(message: response));
       } catch (error) {
         emit(ErrorState(errorMessage: error.toString()));
