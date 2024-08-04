@@ -17,16 +17,14 @@ class EmployeeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(id),
-      background: Container(),
-      secondaryBackground: const EmployeeTileDismissContainer(),
+      background: const EmployeeTileDismissContainer(),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
-          final bool res = await showDialog(
+          return await showDialog(
               context: context,
               builder: (BuildContext context) {
                 return ShowDialogToConfirmEmployeeDeletion(name: name, id: id,);
               });
-          return res;
         }
         return null;
       },
