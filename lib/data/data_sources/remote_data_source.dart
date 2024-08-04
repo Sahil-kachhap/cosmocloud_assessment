@@ -27,7 +27,7 @@ class RemoteDataSource {
 
   Future<List<Employee>> fetchEmployees(int offset) async{
     try {
-      final String url = Constants.baseUrl + Constants.createOrListEmployeesEndpoint(true, limit: 10, offset: offset);
+      final String url = Constants.baseUrl + Constants.createOrListEmployeesEndpoint(true, limit: 11, offset: offset);
       final headers = Constants.apiHeaders();
       final response = await http.get(Uri.parse(url), headers: headers);
 
